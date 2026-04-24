@@ -1,0 +1,1097 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Heal Her Hormones | Aaliyah's Tracker</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --rose: #C9747A;
+  --rose-dark: #a85a60;
+  --rose-light: #f5e8e9;
+  --rose-pale: #fdf4f4;
+  --cream: #FBF8F5;
+  --warm: #8a7f7b;
+  --text: #2d2523;
+  --border: #e8ddd9;
+  --white: #ffffff;
+  --blue: #7ab8c9;
+  --green: #7ac9a7;
+  --gold: #c9a77a;
+  --purple: #9d7ac9;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--text); min-height: 100vh; }
+
+/* HEADER */
+.header { background: var(--white); border-bottom: 1px solid var(--border); padding: 24px 32px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 20px rgba(201,116,122,0.08); flex-wrap: wrap; gap: 12px; }
+.brand-tag { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--rose); font-weight: 500; margin-bottom: 4px; }
+.header-title { font-family: 'Cormorant Garamond', serif; font-size: 30px; font-weight: 400; color: var(--text); line-height: 1.1; }
+.header-title span { color: var(--rose); font-style: italic; }
+.header-sub { font-size: 12px; color: var(--warm); margin-top: 4px; }
+.header-right { text-align: right; }
+.days-count { font-family: 'Cormorant Garamond', serif; font-size: 36px; color: var(--rose); line-height: 1; }
+.days-label { font-size: 11px; color: var(--warm); letter-spacing: 0.06em; text-transform: uppercase; }
+
+/* NAV TABS */
+.nav-tabs { display: flex; background: var(--white); border-bottom: 1px solid var(--border); padding: 0 32px; }
+.nav-tab { padding: 14px 20px; font-size: 13px; font-weight: 500; color: var(--warm); cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.2s; }
+.nav-tab:hover { color: var(--rose); }
+.nav-tab.active { color: var(--rose); border-bottom-color: var(--rose); }
+
+/* LOADING */
+.loading { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 60vh; gap: 16px; }
+.loading-spinner { width: 40px; height: 40px; border-radius: 50%; border: 3px solid var(--rose-light); border-top-color: var(--rose); animation: spin 0.8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.loading-text { font-size: 14px; color: var(--warm); }
+
+/* ERROR */
+.error-box { background: #fff5f5; border: 1px solid #fcc; border-radius: 12px; padding: 24px; margin: 40px; text-align: center; }
+.error-box h3 { color: var(--rose-dark); margin-bottom: 8px; }
+.error-box p { font-size: 13px; color: var(--warm); line-height: 1.6; }
+
+/* MAIN */
+.main { padding: 28px 32px; max-width: 1200px; margin: 0 auto; }
+
+/* WEEK TOGGLE */
+.week-toggle { display: flex; gap: 8px; margin-bottom: 24px; flex-wrap: wrap; }
+.toggle-btn { padding: 7px 16px; border-radius: 100px; border: 1.5px solid var(--border); background: var(--white); color: var(--warm); font-size: 12px; font-family: 'DM Sans', sans-serif; cursor: pointer; transition: all 0.2s; }
+.toggle-btn:hover { border-color: var(--rose); color: var(--rose); }
+.toggle-btn.active { background: var(--rose); border-color: var(--rose); color: var(--white); font-weight: 500; }
+
+/* SCORE CARDS */
+.score-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 14px; margin-bottom: 28px; }
+.score-card { background: var(--white); border-radius: 14px; padding: 18px; box-shadow: 0 2px 12px rgba(201,116,122,0.08); position: relative; overflow: hidden; }
+.score-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; }
+.score-card.skin::before { background: var(--rose); }
+.score-card.sleep::before { background: var(--gold); }
+.score-card.energy::before { background: var(--blue); }
+.score-card.mood::before { background: var(--green); }
+.score-card.anxiety::before { background: var(--purple); }
+.score-card.cycle::before { background: var(--rose-dark); }
+.score-label { font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--warm); margin-bottom: 6px; }
+.score-value { font-family: 'Cormorant Garamond', serif; font-size: 42px; line-height: 1; font-weight: 400; }
+.score-card.skin .score-value { color: var(--rose); }
+.score-card.sleep .score-value { color: var(--gold); }
+.score-card.energy .score-value { color: var(--blue); }
+.score-card.mood .score-value { color: var(--green); }
+.score-card.anxiety .score-value { color: var(--purple); }
+.score-card.cycle .score-value { color: var(--rose-dark); font-size: 22px; padding-top: 8px; }
+.score-sub { font-size: 10px; color: var(--warm); margin-top: 4px; }
+.score-trend { font-size: 11px; margin-top: 6px; font-weight: 500; }
+.trend-good { color: #70b88a; }
+.trend-bad { color: #e07070; }
+.trend-same { color: var(--warm); }
+@keyframes fadeUp { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:none; } }
+
+/* SECTION CARD */
+.section-card { background: var(--white); border-radius: 14px; padding: 24px; margin-bottom: 20px; box-shadow: 0 2px 12px rgba(201,116,122,0.08); }
+.section-title { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 400; margin-bottom: 16px; }
+
+/* CHART */
+canvas { width: 100% !important; display: block; }
+.chart-legend { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 12px; }
+.legend-item { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--warm); }
+.legend-dot { width: 9px; height: 9px; border-radius: 50%; }
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+@media (max-width: 700px) { .two-col { grid-template-columns: 1fr; } }
+
+/* SLEEP BREAKDOWN */
+.sleep-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+.sleep-stat { background: var(--rose-pale); border-radius: 10px; padding: 14px; text-align: center; border: 1px solid var(--rose-light); }
+.sleep-stat-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--warm); margin-bottom: 4px; }
+.sleep-stat-value { font-family: 'Cormorant Garamond', serif; font-size: 28px; color: var(--gold); }
+.sleep-stat-sub { font-size: 10px; color: var(--warm); margin-top: 2px; }
+
+/* CYCLE */
+.cycle-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px; }
+.cycle-card { background: var(--rose-pale); border-radius: 10px; padding: 14px; text-align: center; border: 1px solid var(--rose-light); }
+.cycle-card-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--warm); margin-bottom: 6px; }
+.cycle-card-value { font-family: 'Cormorant Garamond', serif; font-size: 22px; color: var(--rose-dark); line-height: 1.2; }
+
+/* SUPPLEMENT BARS */
+.supp-bars { display: flex; flex-direction: column; gap: 9px; }
+.supp-row { display: flex; align-items: center; gap: 10px; }
+.supp-name-label { font-size: 11px; color: var(--text); width: 150px; flex-shrink: 0; }
+.supp-bar-track { flex: 1; height: 7px; background: var(--rose-light); border-radius: 4px; overflow: hidden; }
+.supp-bar-fill { height: 100%; background: var(--rose); border-radius: 4px; transition: width 1s ease; }
+.supp-pct { font-size: 11px; color: var(--warm); width: 32px; text-align: right; }
+
+/* NOTES */
+.week-group { margin-bottom: 20px; }
+.week-group-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--rose); font-weight: 500; margin-bottom: 8px; padding-bottom: 6px; border-bottom: 1px solid var(--rose-light); }
+.notes-list { display: flex; flex-direction: column; gap: 8px; }
+.note-item { padding: 12px 14px; background: var(--cream); border-radius: 10px; border-left: 3px solid var(--rose); }
+.note-date { font-size: 10px; color: var(--warm); margin-bottom: 3px; }
+.note-category { font-size: 9px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--rose); font-weight: 500; margin-bottom: 2px; }
+.note-text { font-size: 13px; color: var(--text); line-height: 1.5; font-style: italic; }
+.no-notes { font-size: 13px; color: var(--warm); font-style: italic; }
+
+/* DAILY LOG VIEW */
+.log-entries { display: flex; flex-direction: column; gap: 16px; }
+.log-entry { border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+.log-entry-header { background: var(--rose-pale); padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--rose-light); }
+.log-entry-date { font-family: 'Cormorant Garamond', serif; font-size: 18px; color: var(--rose-dark); }
+.log-entry-body { padding: 16px; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; }
+.log-field { }
+.log-field-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--warm); margin-bottom: 3px; }
+.log-field-value { font-size: 13px; color: var(--text); line-height: 1.4; }
+.log-field-value.note { font-style: italic; color: var(--warm); }
+.log-field-value.empty { color: #ccc; font-style: italic; }
+
+/* DAILY LOG FORM */
+.log-form { background: var(--white); border-radius: 14px; padding: 28px; box-shadow: 0 2px 12px rgba(201,116,122,0.08); }
+.form-section { margin-bottom: 28px; padding-bottom: 24px; border-bottom: 1px solid var(--border); }
+.form-section:last-child { border-bottom: none; margin-bottom: 0; }
+.form-section-title { font-family: 'Cormorant Garamond', serif; font-size: 18px; color: var(--rose); margin-bottom: 16px; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+.form-row.single { grid-template-columns: 1fr; }
+.form-row.triple { grid-template-columns: 1fr 1fr 1fr; }
+@media (max-width: 600px) { .form-row, .form-row.triple { grid-template-columns: 1fr; } }
+.form-field { display: flex; flex-direction: column; gap: 5px; }
+.form-label { font-size: 11px; font-weight: 500; color: var(--text); letter-spacing: 0.04em; }
+.form-input, .form-select, .form-textarea {
+  padding: 9px 12px; border: 1.5px solid var(--border); border-radius: 8px;
+  font-family: 'DM Sans', sans-serif; font-size: 13px; color: var(--text);
+  background: var(--white); transition: border-color 0.2s; outline: none;
+}
+.form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--rose); }
+.form-textarea { resize: vertical; min-height: 70px; }
+.scale-row { display: flex; gap: 6px; flex-wrap: wrap; }
+.scale-btn { width: 36px; height: 36px; border-radius: 50%; border: 1.5px solid var(--border); background: var(--white); font-size: 13px; color: var(--warm); cursor: pointer; transition: all 0.15s; display: flex; align-items: center; justify-content: center; }
+.scale-btn:hover { border-color: var(--rose); color: var(--rose); }
+.scale-btn.selected { background: var(--rose); border-color: var(--rose); color: var(--white); font-weight: 500; }
+.heaviness-row { display: flex; gap: 8px; flex-wrap: wrap; }
+.heaviness-btn { padding: 7px 14px; border-radius: 100px; border: 1.5px solid var(--border); background: var(--white); font-size: 12px; color: var(--warm); cursor: pointer; transition: all 0.15s; }
+.heaviness-btn:hover { border-color: var(--rose); color: var(--rose); }
+.heaviness-btn.selected { background: var(--rose); border-color: var(--rose); color: var(--white); font-weight: 500; }
+.clots-row { display: flex; gap: 8px; }
+.clots-btn { padding: 7px 14px; border-radius: 100px; border: 1.5px solid var(--border); background: var(--white); font-size: 12px; color: var(--warm); cursor: pointer; transition: all 0.15s; }
+.clots-btn:hover { border-color: var(--rose); color: var(--rose); }
+.clots-btn.selected { background: var(--rose); border-color: var(--rose); color: var(--white); font-weight: 500; }
+.submit-btn { width: 100%; padding: 14px; background: var(--rose); color: var(--white); border: none; border-radius: 10px; font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 500; cursor: pointer; transition: background 0.2s; margin-top: 8px; }
+.submit-btn:hover { background: var(--rose-dark); }
+.submit-btn:disabled { background: var(--border); cursor: not-allowed; }
+.success-msg { background: #f0faf5; border: 1px solid #7ac9a7; border-radius: 10px; padding: 16px; text-align: center; color: #3a7a5a; font-size: 14px; margin-top: 12px; display: none; }
+
+/* SUPP CHECKLIST */
+.supp-checklist { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+@media (max-width: 500px) { .supp-checklist { grid-template-columns: 1fr; } }
+.supp-check-item { display: flex; align-items: center; gap: 8px; padding: 8px 10px; border: 1.5px solid var(--border); border-radius: 8px; cursor: pointer; transition: all 0.15s; }
+.supp-check-item:hover { border-color: var(--rose); }
+.supp-check-item.checked { background: var(--rose-pale); border-color: var(--rose); }
+.supp-check-item input { accent-color: var(--rose); }
+.supp-check-label { font-size: 12px; color: var(--text); }
+
+/* FOOTER */
+.footer { text-align: center; padding: 28px; font-size: 12px; color: var(--warm); border-top: 1px solid var(--border); }
+.footer strong { color: var(--rose); }
+
+@media (max-width: 600px) {
+  .header { padding: 18px 20px; }
+  .main { padding: 20px; }
+  .nav-tabs { padding: 0 20px; overflow-x: auto; }
+  .nav-tab { white-space: nowrap; }
+}
+</style>
+</head>
+<body>
+
+<div id="app">
+  <div class="loading">
+    <div class="loading-spinner"></div>
+    <div class="loading-text">Loading Aaliyah's data…</div>
+  </div>
+</div>
+
+<script>
+// ── SUPABASE CONFIG ────────────────────────────────────────────────────────
+const SUPABASE_URL = 'https://cqbeatunyrpgdubeehcp.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNxYmVhdHVueXJwZ2R1YmVlaGNwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQ5MjI5NTgsImV4cCI6MjA2MDQ5ODk1OH0.RJ3DkNEDCOaTpgOkmFHkKT1RtVYGKhezIaOAilBBl0s';
+const TABLE = 'aaliyah_entries';
+
+// ── STATE ──────────────────────────────────────────────────────────────────
+let allEntries = [];
+let activeFilter = 'all';
+let activeTab = 'progress';
+let formData = {};
+let submitting = false;
+let authToken = null;
+
+// ── LOGIN ──────────────────────────────────────────────────────────────────
+function showLogin() {
+  document.getElementById('app').innerHTML = `
+    <div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--cream);padding:20px;">
+      <div style="background:var(--white);border-radius:20px;padding:40px;width:100%;max-width:400px;box-shadow:0 4px 32px rgba(201,116,122,0.12);">
+        <div style="text-align:center;margin-bottom:32px;">
+          <div style="font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--rose);font-weight:500;margin-bottom:8px;">Heal Her Hormones</div>
+          <div style="font-family:'Cormorant Garamond',serif;font-size:28px;color:var(--text);margin-bottom:4px;">Welcome back</div>
+          <div style="font-size:13px;color:var(--warm);">Sign in to your health tracker</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:14px;">
+          <div>
+            <div style="font-size:11px;font-weight:500;color:var(--text);margin-bottom:5px;">Email</div>
+            <input id="loginEmail" type="email" placeholder="your@email.com"
+              style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--text);outline:none;background:var(--white);"
+              onkeydown="if(event.key==='Enter')doLogin()">
+          </div>
+          <div>
+            <div style="font-size:11px;font-weight:500;color:var(--text);margin-bottom:5px;">Password</div>
+            <input id="loginPassword" type="password" placeholder="••••••••"
+              style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--text);outline:none;background:var(--white);"
+              onkeydown="if(event.key==='Enter')doLogin()">
+          </div>
+          <div id="loginError" style="display:none;background:#fff5f5;border:1px solid #fcc;border-radius:8px;padding:10px;font-size:12px;color:#c0392b;text-align:center;"></div>
+          <button onclick="doLogin()" id="loginBtn"
+            style="width:100%;padding:13px;background:var(--rose);color:#fff;border:none;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;cursor:pointer;margin-top:4px;">
+            Sign In
+          </button>
+        </div>
+        <div style="text-align:center;margin-top:24px;font-size:11px;color:var(--warm);">Heal Her Hormones · Kairosana LLC · Ruth Anne Crowle, RD</div>
+      </div>
+    </div>`;
+}
+
+async function doLogin() {
+  const email = document.getElementById('loginEmail').value.trim();
+  const password = document.getElementById('loginPassword').value;
+  const btn = document.getElementById('loginBtn');
+  const errEl = document.getElementById('loginError');
+  if (!email || !password) { errEl.textContent = 'Please enter your email and password.'; errEl.style.display = 'block'; return; }
+  btn.disabled = true; btn.textContent = 'Signing in…'; errEl.style.display = 'none';
+  try {
+    const res = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=password`, {
+      method: 'POST',
+      headers: { 'apikey': SUPABASE_KEY, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error_description || data.msg || 'Invalid email or password');
+    authToken = data.access_token;
+    allEntries = await loadEntries();
+    renderApp();
+  } catch(err) {
+    errEl.textContent = err.message; errEl.style.display = 'block';
+    btn.disabled = false; btn.textContent = 'Sign In';
+  }
+}
+
+// ── SUPABASE HELPERS ───────────────────────────────────────────────────────
+async function sbFetch(path, options = {}) {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, {
+    headers: {
+      'apikey': SUPABASE_KEY,
+      'Authorization': `Bearer ${authToken || SUPABASE_KEY}`,
+      'Content-Type': 'application/json',
+      'Prefer': 'return=representation',
+      ...options.headers
+    },
+    ...options
+  });
+  if (!res.ok) throw new Error(`Supabase error: ${res.status}`);
+  return res.json();
+}
+
+async function loadEntries() {
+  return sbFetch(`${TABLE}?order=logged_at.asc&select=*`);
+}
+
+async function saveEntry(data) {
+  return sbFetch(TABLE, {
+    method: 'POST',
+    body: JSON.stringify(data)
+  });
+}
+
+// ── HELPERS ────────────────────────────────────────────────────────────────
+function avg(arr) {
+  const nums = arr.filter(v => v !== null && v !== undefined && v !== '' && !isNaN(+v)).map(Number);
+  if (!nums.length) return null;
+  return Math.round((nums.reduce((a,b) => a+b,0) / nums.length) * 10) / 10;
+}
+
+function trendArrow(current, previous, lowerIsBetter = false) {
+  if (previous == null || current == null) return { symbol: '—', cls: 'trend-same', text: 'No prev data' };
+  const diff = current - previous;
+  if (Math.abs(diff) < 0.3) return { symbol: '→', cls: 'trend-same', text: 'Stable' };
+  const improving = lowerIsBetter ? diff < 0 : diff > 0;
+  return {
+    symbol: diff > 0 ? '↑' : '↓',
+    cls: improving ? 'trend-good' : 'trend-bad',
+    text: `${diff > 0 ? '+' : ''}${diff.toFixed(1)} from prev`
+  };
+}
+
+function filterEntries(entries, filter) {
+  if (filter === 'all') return entries;
+  const now = new Date();
+  const startOfWeek = (offset = 0) => {
+    const d = new Date(now);
+    d.setDate(d.getDate() - d.getDay() - offset * 7);
+    d.setHours(0,0,0,0);
+    return d;
+  };
+  return entries.filter(e => {
+    const d = new Date(e.logged_at);
+    if (isNaN(d)) return false;
+    if (filter === 'this') return d >= startOfWeek(0);
+    if (filter === 'last') return d >= startOfWeek(1) && d < startOfWeek(0);
+    if (filter === '30') { const c = new Date(now); c.setDate(now.getDate()-30); return d >= c; }
+    return true;
+  });
+}
+
+function groupByWeek(entries) {
+  const groups = {};
+  entries.forEach(e => {
+    const d = new Date(e.logged_at);
+    if (isNaN(d)) return;
+    const monday = new Date(d);
+    monday.setDate(d.getDate() - ((d.getDay() + 6) % 7));
+    const key = monday.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    if (!groups[key]) groups[key] = [];
+    groups[key].push(e);
+  });
+  return Object.entries(groups).sort((a,b) => new Date(b[0]) - new Date(a[0]));
+}
+
+function formatDate(iso) {
+  if (!iso) return '';
+  const d = new Date(iso);
+  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+}
+
+function val(v, fallback = '—') {
+  return (v !== null && v !== undefined && v !== '') ? v : fallback;
+}
+
+// ── CHART ──────────────────────────────────────────────────────────────────
+function drawChart(canvasId, labels, datasets, yMax = 10) {
+  const canvas = document.getElementById(canvasId);
+  if (!canvas) return;
+  const dpr = window.devicePixelRatio || 1;
+  const W = canvas.offsetWidth;
+  const H = canvas.offsetHeight || 200;
+  canvas.width = W * dpr; canvas.height = H * dpr;
+  const ctx = canvas.getContext('2d');
+  ctx.scale(dpr, dpr);
+  const pad = { top: 14, right: 18, bottom: 32, left: 32 };
+  const cW = W - pad.left - pad.right;
+  const cH = H - pad.top - pad.bottom;
+  const n = labels.length;
+  if (n < 1) return;
+  ctx.fillStyle = '#fdf4f4'; ctx.fillRect(0,0,W,H);
+  [2,4,6,8,10].filter(v => v <= yMax).forEach(v => {
+    const y = pad.top + cH - (v/yMax)*cH;
+    ctx.strokeStyle = '#e8ddd9'; ctx.lineWidth = 0.5; ctx.setLineDash([4,4]);
+    ctx.beginPath(); ctx.moveTo(pad.left,y); ctx.lineTo(W-pad.right,y); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = '#bbb'; ctx.font = `9px DM Sans`; ctx.textAlign = 'right';
+    ctx.fillText(v, pad.left-4, y+3);
+  });
+  datasets.forEach(({data, color}) => {
+    const pts = data.map((v,i) => ({
+      x: pad.left + (n>1 ? (i/(n-1))*cW : cW/2),
+      y: pad.top + cH - ((+v)/yMax)*cH, v
+    })).filter(p => p.v !== null && p.v !== '' && !isNaN(+p.v));
+    if (!pts.length) return;
+    ctx.beginPath(); ctx.moveTo(pts[0].x, pad.top+cH);
+    pts.forEach(p => ctx.lineTo(p.x,p.y));
+    ctx.lineTo(pts[pts.length-1].x, pad.top+cH);
+    ctx.closePath(); ctx.fillStyle = color+'18'; ctx.fill();
+    ctx.beginPath(); ctx.strokeStyle = color; ctx.lineWidth = 2.5;
+    ctx.lineJoin = 'round'; ctx.lineCap = 'round';
+    pts.forEach((p,i) => i===0 ? ctx.moveTo(p.x,p.y) : ctx.lineTo(p.x,p.y));
+    ctx.stroke();
+    pts.forEach(p => {
+      ctx.beginPath(); ctx.arc(p.x,p.y,4,0,Math.PI*2); ctx.fillStyle=color; ctx.fill();
+      ctx.beginPath(); ctx.arc(p.x,p.y,2,0,Math.PI*2); ctx.fillStyle='#fff'; ctx.fill();
+    });
+  });
+  ctx.fillStyle='#8a7f7b'; ctx.font='9px DM Sans'; ctx.textAlign='center';
+  labels.forEach((l,i) => {
+    const x = pad.left + (n>1 ? (i/(n-1))*cW : cW/2);
+    ctx.fillText(l, x, H-6);
+  });
+}
+
+// ── SUPPLEMENT COMPLIANCE ──────────────────────────────────────────────────
+const SUPP_LIST = [
+  'Iron (morning)', 'Iron (lunch)', 'Vitamin C', 'L-Glutamine',
+  'Zinc Carnosine', 'Probiotic', 'Akkermansia', 'DAO Enzyme',
+  'Vitamin D', 'Selenium', 'Omega-3', 'B12', 'Magnesium', 'Multivitamin'
+];
+
+function suppCompliance(entries) {
+  const counts = {};
+  SUPP_LIST.forEach(s => counts[s] = 0);
+  entries.forEach(e => {
+    const taken = (e.supplements || '').toLowerCase();
+    SUPP_LIST.forEach(s => {
+      if (taken.includes(s.toLowerCase().split(' ')[0])) counts[s]++;
+    });
+  });
+  return SUPP_LIST.map(s => ({ name: s, pct: entries.length ? Math.round((counts[s]/entries.length)*100) : 0 }));
+}
+
+// ── RENDER ─────────────────────────────────────────────────────────────────
+function renderApp() {
+  const filtered = filterEntries(allEntries, activeFilter);
+  const latest = filtered[filtered.length - 1] || {};
+  const prev = filtered.length > 1 ? filtered[filtered.length - 2] : null;
+
+  const skinData = filtered.map(e => e.skin_severity);
+  const sleepQData = filtered.map(e => e.sleep_quality);
+  const sleepHData = filtered.map(e => e.sleep_hours);
+  const energyData = filtered.map(e => e.energy_level);
+  const moodData = filtered.map(e => e.mood);
+  const anxietyData = filtered.map(e => e.anxiety);
+  const painData = filtered.map(e => e.period_pain);
+
+  const labels = filtered.map(e => {
+    const d = new Date(e.logged_at);
+    return isNaN(d) ? '' : `${d.getMonth()+1}/${d.getDate()}`;
+  });
+
+  const latestSkin = latest.skin_severity ?? null;
+  const latestSleepQ = latest.sleep_quality ?? null;
+  const latestSleepH = latest.sleep_hours ?? null;
+  const latestWaking = latest.night_waking ?? null;
+  const latestEnergy = latest.energy_level ?? null;
+  const latestMood = latest.mood ?? null;
+  const latestAnxiety = latest.anxiety ?? null;
+  const latestHeaviness = latest.flow_heaviness ?? null;
+  const latestClots = latest.clots ?? null;
+
+  const skinTrend = trendArrow(latestSkin, prev?.skin_severity, true);
+  const sleepTrend = trendArrow(latestSleepQ, prev?.sleep_quality, false);
+  const energyTrend = trendArrow(latestEnergy, prev?.energy_level, false);
+  const moodTrend = trendArrow(latestMood, prev?.mood, false);
+  const anxietyTrend = trendArrow(latestAnxiety, prev?.anxiety, true);
+
+  const supps = suppCompliance(filtered);
+
+  // Notes grouped by week
+  const weekGroups = groupByWeek(filtered);
+  const notesHTML = weekGroups.map(([weekLabel, weekEntries]) => {
+    const notes = weekEntries.flatMap(e => {
+      const items = [];
+      const date = formatDate(e.logged_at);
+      if (e.skin_notes) items.push({cat:'Skin', text:e.skin_notes, date});
+      if (e.sleep_notes) items.push({cat:'Sleep', text:e.sleep_notes, date});
+      if (e.energy_notes) items.push({cat:'Energy', text:e.energy_notes, date});
+      if (e.mood_notes) items.push({cat:'Mood', text:e.mood_notes, date});
+      if (e.cycle_notes) items.push({cat:'Cycle', text:e.cycle_notes, date});
+      if (e.digest_notes) items.push({cat:'Digestion', text:e.digest_notes, date});
+      if (e.food_notes) items.push({cat:'Food', text:e.food_notes, date});
+      if (e.supplement_notes) items.push({cat:'Supplements', text:e.supplement_notes, date});
+      if (e.weekly_win) items.push({cat:'Weekly Win', text:e.weekly_win, date});
+      if (e.general_notes) items.push({cat:'Notes', text:e.general_notes, date});
+      return items;
+    });
+    if (!notes.length) return '';
+    return `<div class="week-group">
+      <div class="week-group-label">Week of ${weekLabel}</div>
+      <div class="notes-list">
+        ${notes.map(n => `
+          <div class="note-item">
+            <div class="note-date">${n.date}</div>
+            <div class="note-category">${n.cat}</div>
+            <div class="note-text">"${n.text}"</div>
+          </div>`).join('')}
+      </div>
+    </div>`;
+  }).join('');
+
+  // Daily log entries view
+  const logHTML = [...allEntries].reverse().map(e => `
+    <div class="log-entry">
+      <div class="log-entry-header">
+        <div class="log-entry-date">${formatDate(e.logged_at)}</div>
+        <div style="font-size:11px;color:var(--warm);">${new Date(e.logged_at).toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'})}</div>
+      </div>
+      <div class="log-entry-body">
+        <div class="log-field"><div class="log-field-label">Skin Severity</div><div class="log-field-value">${val(e.skin_severity)} / 10</div></div>
+        <div class="log-field"><div class="log-field-label">Skin Itch</div><div class="log-field-value">${val(e.skin_itch)} / 10</div></div>
+        <div class="log-field"><div class="log-field-label">Skin Areas</div><div class="log-field-value">${val(e.skin_areas)}</div></div>
+        <div class="log-field"><div class="log-field-label">Sleep Hours</div><div class="log-field-value">${val(e.sleep_hours)} hrs</div></div>
+        <div class="log-field"><div class="log-field-label">Sleep Quality</div><div class="log-field-value">${val(e.sleep_quality)} / 10</div></div>
+        <div class="log-field"><div class="log-field-label">Times Waking</div><div class="log-field-value">${val(e.night_waking)}x</div></div>
+        <div class="log-field"><div class="log-field-label">Energy</div><div class="log-field-value">${val(e.energy_level)} / 10</div></div>
+        <div class="log-field"><div class="log-field-label">Energy Crash</div><div class="log-field-value">${val(e.energy_crash)}</div></div>
+        <div class="log-field"><div class="log-field-label">Mood</div><div class="log-field-value">${val(e.mood)} / 10</div></div>
+        <div class="log-field"><div class="log-field-label">Anxiety</div><div class="log-field-value">${val(e.anxiety)} / 10</div></div>
+        <div class="log-field"><div class="log-field-label">Cycle Phase</div><div class="log-field-value">${val(e.cycle_phase)}</div></div>
+        <div class="log-field"><div class="log-field-label">Period Pain</div><div class="log-field-value">${val(e.period_pain)} / 10</div></div>
+        <div class="log-field"><div class="log-field-label">Flow Heaviness</div><div class="log-field-value">${val(e.flow_heaviness)}</div></div>
+        <div class="log-field"><div class="log-field-label">Clots</div><div class="log-field-value">${val(e.clots)}</div></div>
+        <div class="log-field"><div class="log-field-label">Supplements</div><div class="log-field-value">${val(e.supplements)}</div></div>
+        <div class="log-field"><div class="log-field-label">Meals / Day</div><div class="log-field-value">${val(e.meals_per_day)}</div></div>
+        ${e.skin_notes ? `<div class="log-field" style="grid-column:1/-1"><div class="log-field-label">Skin Notes</div><div class="log-field-value note">"${e.skin_notes}"</div></div>` : ''}
+        ${e.sleep_notes ? `<div class="log-field" style="grid-column:1/-1"><div class="log-field-label">Sleep Notes</div><div class="log-field-value note">"${e.sleep_notes}"</div></div>` : ''}
+        ${e.energy_notes ? `<div class="log-field" style="grid-column:1/-1"><div class="log-field-label">Energy Notes</div><div class="log-field-value note">"${e.energy_notes}"</div></div>` : ''}
+        ${e.mood_notes ? `<div class="log-field" style="grid-column:1/-1"><div class="log-field-label">Mood Notes</div><div class="log-field-value note">"${e.mood_notes}"</div></div>` : ''}
+        ${e.cycle_notes ? `<div class="log-field" style="grid-column:1/-1"><div class="log-field-label">Cycle Notes</div><div class="log-field-value note">"${e.cycle_notes}"</div></div>` : ''}
+        ${e.supplement_notes ? `<div class="log-field" style="grid-column:1/-1"><div class="log-field-label">Supplement Notes</div><div class="log-field-value note">"${e.supplement_notes}"</div></div>` : ''}
+        ${e.weekly_win ? `<div class="log-field" style="grid-column:1/-1"><div class="log-field-label">Weekly Win</div><div class="log-field-value note">"${e.weekly_win}"</div></div>` : ''}
+        ${e.general_notes ? `<div class="log-field" style="grid-column:1/-1"><div class="log-field-label">General Notes</div><div class="log-field-value note">"${e.general_notes}"</div></div>` : ''}
+      </div>
+    </div>
+  `).join('');
+
+  document.getElementById('app').innerHTML = `
+    <header class="header">
+      <div>
+        <div class="brand-tag">Heal Her Hormones · Ruth Anne Crowle, RD</div>
+        <h1 class="header-title"><span>Aaliyah's</span> Health Tracker</h1>
+        <div class="header-sub">Daily check-in · Progress overview</div>
+      </div>
+      <div class="header-right">
+        <div class="days-count">${allEntries.length}</div>
+        <div class="days-label">Days logged</div>
+        <div style="font-size:11px;color:var(--warm);margin-top:4px;">Last: ${formatDate(latest.logged_at)}</div>
+      </div>
+    </header>
+
+    <div class="nav-tabs">
+      <div class="nav-tab ${activeTab==='progress'?'active':''}" onclick="switchTab('progress')">Progress</div>
+      <div class="nav-tab ${activeTab==='log'?'active':''}" onclick="switchTab('log')">Daily Logs</div>
+      <div class="nav-tab ${activeTab==='dailyform'?'active':''}" onclick="switchTab('dailyform')">Log Today</div>
+    </div>
+
+    <div class="main">
+
+      ${activeTab === 'progress' ? `
+
+        <!-- WEEK TOGGLE -->
+        <div class="week-toggle">
+          <button class="toggle-btn ${activeFilter==='this'?'active':''}" onclick="setFilter('this')">This Week</button>
+          <button class="toggle-btn ${activeFilter==='last'?'active':''}" onclick="setFilter('last')">Last Week</button>
+          <button class="toggle-btn ${activeFilter==='30'?'active':''}" onclick="setFilter('30')">Last 30 Days</button>
+          <button class="toggle-btn ${activeFilter==='all'?'active':''}" onclick="setFilter('all')">All Time</button>
+        </div>
+
+        <!-- SCORE CARDS -->
+        <div class="score-grid">
+          <div class="score-card skin">
+            <div class="score-label">Skin Severity</div>
+            <div class="score-value">${latestSkin ?? '—'}</div>
+            <div class="score-sub">avg ${avg(skinData) ?? '—'}/10</div>
+            <div class="score-trend ${skinTrend.cls}">${skinTrend.symbol} ${skinTrend.text}</div>
+          </div>
+          <div class="score-card sleep">
+            <div class="score-label">Sleep Quality</div>
+            <div class="score-value">${latestSleepQ ?? '—'}</div>
+            <div class="score-sub">avg ${avg(sleepQData) ?? '—'}/10</div>
+            <div class="score-trend ${sleepTrend.cls}">${sleepTrend.symbol} ${sleepTrend.text}</div>
+          </div>
+          <div class="score-card energy">
+            <div class="score-label">Energy</div>
+            <div class="score-value">${latestEnergy ?? '—'}</div>
+            <div class="score-sub">avg ${avg(energyData) ?? '—'}/10</div>
+            <div class="score-trend ${energyTrend.cls}">${energyTrend.symbol} ${energyTrend.text}</div>
+          </div>
+          <div class="score-card mood">
+            <div class="score-label">Mood</div>
+            <div class="score-value">${latestMood ?? '—'}</div>
+            <div class="score-sub">avg ${avg(moodData) ?? '—'}/10</div>
+            <div class="score-trend ${moodTrend.cls}">${moodTrend.symbol} ${moodTrend.text}</div>
+          </div>
+          <div class="score-card anxiety">
+            <div class="score-label">Anxiety</div>
+            <div class="score-value">${latestAnxiety ?? '—'}</div>
+            <div class="score-sub">avg ${avg(anxietyData) ?? '—'}/10</div>
+            <div class="score-trend ${anxietyTrend.cls}">${anxietyTrend.symbol} ${anxietyTrend.text}</div>
+          </div>
+          <div class="score-card cycle">
+            <div class="score-label">Flow Heaviness</div>
+            <div class="score-value">${latestHeaviness ?? '—'}</div>
+            <div class="score-sub">Clots: ${latestClots ?? '—'}</div>
+          </div>
+        </div>
+
+        <!-- MAIN CHART -->
+        <div class="section-card">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px;">
+            <div class="section-title" style="margin:0;">Key Scores Over Time</div>
+            <div class="chart-legend">
+              <div class="legend-item"><div class="legend-dot" style="background:var(--rose)"></div>Skin</div>
+              <div class="legend-item"><div class="legend-dot" style="background:var(--gold)"></div>Sleep</div>
+              <div class="legend-item"><div class="legend-dot" style="background:var(--blue)"></div>Energy</div>
+              <div class="legend-item"><div class="legend-dot" style="background:var(--green)"></div>Mood</div>
+              <div class="legend-item"><div class="legend-dot" style="background:var(--purple)"></div>Anxiety</div>
+            </div>
+          </div>
+          <canvas id="mainChart" style="height:220px;"></canvas>
+        </div>
+
+        <!-- TWO CHARTS -->
+        <div class="two-col">
+          <div class="section-card" style="margin-bottom:0;">
+            <div class="chart-legend" style="margin-bottom:10px;">
+              <span style="font-family:'Cormorant Garamond',serif;font-size:16px;margin-right:8px;">Skin &amp; Anxiety</span>
+              <div class="legend-item"><div class="legend-dot" style="background:var(--rose)"></div>Skin</div>
+              <div class="legend-item"><div class="legend-dot" style="background:var(--purple)"></div>Anxiety</div>
+            </div>
+            <canvas id="skinChart" style="height:160px;"></canvas>
+          </div>
+          <div class="section-card" style="margin-bottom:0;">
+            <div class="chart-legend" style="margin-bottom:10px;">
+              <span style="font-family:'Cormorant Garamond',serif;font-size:16px;margin-right:8px;">Sleep &amp; Energy</span>
+              <div class="legend-item"><div class="legend-dot" style="background:var(--gold)"></div>Sleep Q</div>
+              <div class="legend-item"><div class="legend-dot" style="background:var(--blue)"></div>Energy</div>
+            </div>
+            <canvas id="sleepChart" style="height:160px;"></canvas>
+          </div>
+        </div>
+
+        <!-- SLEEP BREAKDOWN -->
+        <div class="section-card">
+          <div class="section-title">Sleep Breakdown</div>
+          <div class="sleep-grid">
+            <div class="sleep-stat">
+              <div class="sleep-stat-label">Hours Slept (latest)</div>
+              <div class="sleep-stat-value">${latestSleepH ?? '—'}</div>
+              <div class="sleep-stat-sub">avg ${avg(sleepHData) ?? '—'} hrs</div>
+            </div>
+            <div class="sleep-stat">
+              <div class="sleep-stat-label">Times Waking (latest)</div>
+              <div class="sleep-stat-value">${latestWaking ?? '—'}</div>
+              <div class="sleep-stat-sub">times per night</div>
+            </div>
+            <div class="sleep-stat">
+              <div class="sleep-stat-label">Sleep Quality (latest)</div>
+              <div class="sleep-stat-value">${latestSleepQ ?? '—'}</div>
+              <div class="sleep-stat-sub">avg ${avg(sleepQData) ?? '—'}/10</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CYCLE -->
+        <div class="section-card">
+          <div class="section-title">Cycle &amp; Menstrual Health</div>
+          <div class="cycle-grid">
+            <div class="cycle-card">
+              <div class="cycle-card-label">Phase</div>
+              <div class="cycle-card-value">${val(latest.cycle_phase)}</div>
+            </div>
+            <div class="cycle-card">
+              <div class="cycle-card-label">Pain (latest)</div>
+              <div class="cycle-card-value">${val(latest.period_pain)} <span style="font-size:14px;color:var(--warm);">/10</span></div>
+            </div>
+            <div class="cycle-card">
+              <div class="cycle-card-label">Flow Heaviness</div>
+              <div class="cycle-card-value">${val(latest.flow_heaviness)}</div>
+            </div>
+            <div class="cycle-card">
+              <div class="cycle-card-label">Clots</div>
+              <div class="cycle-card-value">${val(latest.clots)}</div>
+            </div>
+            <div class="cycle-card">
+              <div class="cycle-card-label">Symptoms</div>
+              <div class="cycle-card-value" style="font-size:14px;">${val(latest.period_symptoms)}</div>
+            </div>
+          </div>
+          ${latest.cycle_notes ? `<div style="margin-top:12px;padding:12px;background:var(--rose-pale);border-radius:8px;border-left:3px solid var(--rose-dark);font-size:13px;font-style:italic;color:var(--text);">"${latest.cycle_notes}"</div>` : ''}
+        </div>
+
+        <!-- SUPPLEMENT COMPLIANCE -->
+        <div class="section-card">
+          <div class="section-title">Supplement Compliance</div>
+          <div class="supp-bars">
+            ${supps.map(s => `
+              <div class="supp-row">
+                <div class="supp-name-label">${s.name}</div>
+                <div class="supp-bar-track"><div class="supp-bar-fill" style="width:${s.pct}%"></div></div>
+                <div class="supp-pct">${s.pct}%</div>
+              </div>`).join('')}
+          </div>
+        </div>
+
+        <!-- ALL NOTES -->
+        <div class="section-card">
+          <div class="section-title">All Notes — by Week</div>
+          ${notesHTML || '<div class="no-notes">No notes logged yet.</div>'}
+        </div>
+
+      ` : activeTab === 'log' ? `
+
+        <!-- DAILY LOG VIEW -->
+        <div class="section-card">
+          <div class="section-title">All Daily Entries</div>
+          <div class="log-entries">
+            ${logHTML || '<div class="no-notes">No entries yet.</div>'}
+          </div>
+        </div>
+
+      ` : `
+
+        <!-- DAILY LOG FORM -->
+        <div class="log-form">
+          <div style="font-family:'Cormorant Garamond',serif;font-size:26px;margin-bottom:6px;">Log Today's Check-in</div>
+          <div style="font-size:13px;color:var(--warm);margin-bottom:24px;">${new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'})}</div>
+
+          <!-- SKIN -->
+          <div class="form-section">
+            <div class="form-section-title">Skin</div>
+            <div class="form-row single">
+              <div class="form-field">
+                <div class="form-label">Severity (1 = clear, 10 = severe flare)</div>
+                <div class="scale-row" id="scale-skin_severity"></div>
+              </div>
+            </div>
+            <div class="form-row single">
+              <div class="form-field">
+                <div class="form-label">Itch Level (1-10)</div>
+                <div class="scale-row" id="scale-skin_itch"></div>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-field">
+                <div class="form-label">Areas affected</div>
+                <input class="form-input" placeholder="e.g. face, neck, arms" oninput="setField('skin_areas',this.value)">
+              </div>
+              <div class="form-field">
+                <div class="form-label">Skin notes</div>
+                <input class="form-input" placeholder="Any observations..." oninput="setField('skin_notes',this.value)">
+              </div>
+            </div>
+          </div>
+
+          <!-- SLEEP -->
+          <div class="form-section">
+            <div class="form-section-title">Sleep</div>
+            <div class="form-row triple">
+              <div class="form-field">
+                <div class="form-label">Hours slept</div>
+                <input class="form-input" type="number" min="0" max="24" step="0.5" placeholder="7.5" oninput="setField('sleep_hours',+this.value)">
+              </div>
+              <div class="form-field">
+                <div class="form-label">Times waking</div>
+                <input class="form-input" type="number" min="0" max="20" placeholder="0" oninput="setField('night_waking',+this.value)">
+              </div>
+              <div class="form-field">
+                <div class="form-label">Sleep quality (1-10)</div>
+                <div class="scale-row" id="scale-sleep_quality"></div>
+              </div>
+            </div>
+            <div class="form-row single">
+              <div class="form-field">
+                <div class="form-label">Sleep notes</div>
+                <input class="form-input" placeholder="How did you sleep?" oninput="setField('sleep_notes',this.value)">
+              </div>
+            </div>
+          </div>
+
+          <!-- ENERGY -->
+          <div class="form-section">
+            <div class="form-section-title">Energy</div>
+            <div class="form-row">
+              <div class="form-field">
+                <div class="form-label">Energy level (1-10)</div>
+                <div class="scale-row" id="scale-energy_level"></div>
+              </div>
+              <div class="form-field">
+                <div class="form-label">Afternoon crash?</div>
+                <select class="form-select" onchange="setField('energy_crash',this.value)">
+                  <option value="">Select</option>
+                  <option>Yes</option>
+                  <option>No</option>
+                  <option>Mild</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row single">
+              <div class="form-field">
+                <div class="form-label">Energy notes</div>
+                <input class="form-input" placeholder="How was your energy today?" oninput="setField('energy_notes',this.value)">
+              </div>
+            </div>
+          </div>
+
+          <!-- DIGESTION -->
+          <div class="form-section">
+            <div class="form-section-title">Digestion</div>
+            <div class="form-row">
+              <div class="form-field">
+                <div class="form-label">BM frequency</div>
+                <input class="form-input" type="number" min="0" max="10" placeholder="1" oninput="setField('bm_freq',+this.value)">
+              </div>
+              <div class="form-field">
+                <div class="form-label">Bristol stool type (1-7)</div>
+                <div class="scale-row" id="scale-bristol"></div>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-field">
+                <div class="form-label">Symptoms</div>
+                <input class="form-input" placeholder="e.g. bloating, cramping" oninput="setField('digest_symptoms',this.value)">
+              </div>
+              <div class="form-field">
+                <div class="form-label">Digestion notes</div>
+                <input class="form-input" placeholder="Any observations..." oninput="setField('digest_notes',this.value)">
+              </div>
+            </div>
+          </div>
+
+          <!-- CYCLE -->
+          <div class="form-section">
+            <div class="form-section-title">Cycle &amp; Menstrual Health</div>
+            <div class="form-row">
+              <div class="form-field">
+                <div class="form-label">Cycle phase</div>
+                <select class="form-select" onchange="setField('cycle_phase',this.value)">
+                  <option value="">Select phase</option>
+                  <option>Menstrual</option>
+                  <option>Follicular</option>
+                  <option>Ovulatory</option>
+                  <option>Luteal</option>
+                  <option>Not sure</option>
+                </select>
+              </div>
+              <div class="form-field">
+                <div class="form-label">Period pain (1-10)</div>
+                <div class="scale-row" id="scale-period_pain"></div>
+              </div>
+            </div>
+            <div class="form-row single">
+              <div class="form-field">
+                <div class="form-label">Flow Heaviness</div>
+                <div class="heaviness-row">
+                  ${['Light','Normal','Medium','Heavy','Super Heavy'].map(h => `
+                    <button class="heaviness-btn" onclick="selectHeaviness('${h}',this)">${h}</button>
+                  `).join('')}
+                </div>
+              </div>
+            </div>
+            <div class="form-row single">
+              <div class="form-field">
+                <div class="form-label">Clots</div>
+                <div class="clots-row">
+                  ${['None','Small','Large','Many'].map(c => `
+                    <button class="clots-btn" onclick="selectClots('${c}',this)">${c}</button>
+                  `).join('')}
+                </div>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-field">
+                <div class="form-label">Period symptoms</div>
+                <input class="form-input" placeholder="e.g. cramps, back pain" oninput="setField('period_symptoms',this.value)">
+              </div>
+              <div class="form-field">
+                <div class="form-label">Cycle notes</div>
+                <input class="form-input" placeholder="Any observations..." oninput="setField('cycle_notes',this.value)">
+              </div>
+            </div>
+          </div>
+
+          <!-- MOOD -->
+          <div class="form-section">
+            <div class="form-section-title">Mood &amp; Anxiety</div>
+            <div class="form-row">
+              <div class="form-field">
+                <div class="form-label">Mood (1-10)</div>
+                <div class="scale-row" id="scale-mood"></div>
+              </div>
+              <div class="form-field">
+                <div class="form-label">Anxiety (1-10)</div>
+                <div class="scale-row" id="scale-anxiety"></div>
+              </div>
+            </div>
+            <div class="form-row single">
+              <div class="form-field">
+                <div class="form-label">Mood notes</div>
+                <input class="form-input" placeholder="How are you feeling emotionally?" oninput="setField('mood_notes',this.value)">
+              </div>
+            </div>
+          </div>
+
+          <!-- FOOD -->
+          <div class="form-section">
+            <div class="form-section-title">Food &amp; Nutrition</div>
+            <div class="form-row">
+              <div class="form-field">
+                <div class="form-label">Meals today</div>
+                <input class="form-input" type="number" min="0" max="10" placeholder="3" oninput="setField('meals_per_day',+this.value)">
+              </div>
+              <div class="form-field">
+                <div class="form-label">Breakfast timing</div>
+                <input class="form-input" placeholder="e.g. 8am, skipped" oninput="setField('breakfast_timing',this.value)">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-field">
+                <div class="form-label">New foods tried</div>
+                <input class="form-input" placeholder="Any new foods?" oninput="setField('new_foods',this.value)">
+              </div>
+              <div class="form-field">
+                <div class="form-label">Food notes</div>
+                <input class="form-input" placeholder="How did food feel today?" oninput="setField('food_notes',this.value)">
+              </div>
+            </div>
+          </div>
+
+          <!-- SUPPLEMENTS -->
+          <div class="form-section">
+            <div class="form-section-title">Supplements</div>
+            <div class="supp-checklist">
+              ${SUPP_LIST.map(s => `
+                <div class="supp-check-item" onclick="toggleSupp('${s}',this)">
+                  <input type="checkbox" id="supp-${s.replace(/\s/g,'-')}">
+                  <div class="supp-check-label">${s}</div>
+                </div>`).join('')}
+            </div>
+            <div style="margin-top:12px;">
+              <div class="form-label" style="margin-bottom:6px;">Supplement notes</div>
+              <input class="form-input" placeholder="Any reactions or observations..." oninput="setField('supplement_notes',this.value)" style="width:100%;">
+            </div>
+          </div>
+
+          <!-- WINS & NOTES -->
+          <div class="form-section">
+            <div class="form-section-title">Wins &amp; Notes</div>
+            <div class="form-row single">
+              <div class="form-field">
+                <div class="form-label">Weekly win — what went well?</div>
+                <textarea class="form-textarea" placeholder="Share a win, big or small..." oninput="setField('weekly_win',this.value)"></textarea>
+              </div>
+            </div>
+            <div class="form-row single">
+              <div class="form-field">
+                <div class="form-label">General notes</div>
+                <textarea class="form-textarea" placeholder="Anything else you want to track..." oninput="setField('general_notes',this.value)"></textarea>
+              </div>
+            </div>
+          </div>
+
+          <button class="submit-btn" onclick="submitEntry()" id="submitBtn">Save Today's Entry</button>
+          <div class="success-msg" id="successMsg">Entry saved! Keep up the great work.</div>
+        </div>
+
+      `}
+
+    </div>
+
+    <div class="footer">
+      <strong>Heal Her Hormones</strong> · Precision Hormone Health for Women<br>
+      Kairosana LLC · Ruth Anne Crowle, RD
+    </div>
+  `;
+
+  // Build scale buttons
+  if (activeTab === 'dailyform') {
+    [
+      ['skin_severity', 10], ['skin_itch', 10], ['sleep_quality', 10],
+      ['energy_level', 10], ['period_pain', 10], ['mood', 10], ['anxiety', 10], ['bristol', 7]
+    ].forEach(([field, max]) => {
+      const container = document.getElementById(`scale-${field}`);
+      if (!container) return;
+      for (let i = 1; i <= max; i++) {
+        const btn = document.createElement('button');
+        btn.className = 'scale-btn';
+        btn.textContent = i;
+        btn.onclick = () => {
+          container.querySelectorAll('.scale-btn').forEach(b => b.classList.remove('selected'));
+          btn.classList.add('selected');
+          setField(field, i);
+        };
+        container.appendChild(btn);
+      }
+    });
+  }
+
+  // Draw charts
+  if (activeTab === 'progress') {
+    requestAnimationFrame(() => {
+      drawChart('mainChart', labels, [
+        {data: skinData, color:'#C9747A'},
+        {data: sleepQData, color:'#c9a77a'},
+        {data: energyData, color:'#7ab8c9'},
+        {data: moodData, color:'#7ac9a7'},
+        {data: anxietyData, color:'#9d7ac9'},
+      ]);
+      drawChart('skinChart', labels, [
+        {data: skinData, color:'#C9747A'},
+        {data: anxietyData, color:'#9d7ac9'},
+      ]);
+      drawChart('sleepChart', labels, [
+        {data: sleepQData, color:'#c9a77a'},
+        {data: energyData, color:'#7ab8c9'},
+      ]);
+    });
+  }
+}
+
+// ── FORM HELPERS ───────────────────────────────────────────────────────────
+let selectedSupps = new Set();
+
+function setField(field, value) {
+  formData[field] = value;
+}
+
+function selectHeaviness(value, btn) {
+  document.querySelectorAll('.heaviness-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  setField('flow_heaviness', value);
+}
+
+function selectClots(value, btn) {
+  document.querySelectorAll('.clots-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  setField('clots', value);
+}
+
+function toggleSupp(name, item) {
+  const cb = item.querySelector('input');
+  cb.checked = !cb.checked;
+  item.classList.toggle('checked', cb.checked);
+  if (cb.checked) selectedSupps.add(name);
+  else selectedSupps.delete(name);
+  formData.supplements = [...selectedSupps].join(', ');
+}
+
+async function submitEntry() {
+  if (submitting) return;
+  submitting = true;
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.textContent = 'Saving…';
+  try {
+    const entry = {
+      logged_at: new Date().toISOString(),
+      ...formData
+    };
+    await saveEntry(entry);
+    document.getElementById('successMsg').style.display = 'block';
+    btn.textContent = 'Saved!';
+    formData = {};
+    selectedSupps.clear();
+    // Reload data
+    allEntries = await loadEntries();
+    setTimeout(() => { activeTab = 'progress'; renderApp(); }, 1500);
+  } catch(err) {
+    btn.disabled = false;
+    btn.textContent = 'Save Today\'s Entry';
+    alert('Error saving: ' + err.message);
+  } finally {
+    submitting = false;
+  }
+}
+
+function switchTab(tab) {
+  activeTab = tab;
+  renderApp();
+}
+
+function setFilter(filter) {
+  activeFilter = filter;
+  renderApp();
+}
+
+// ── INIT ───────────────────────────────────────────────────────────────────
+showLogin();
+</script>
+</body>
+</html>
